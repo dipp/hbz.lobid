@@ -1,0 +1,6 @@
+include *
+
+recursive-include docs *
+recursive-include hbz *
+
+global-exclude *pyc
