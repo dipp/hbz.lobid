@@ -7,6 +7,8 @@ Python module for getting information from the `lobid API <http://lobid.org/api>
 Installation
 ************
 
-Installation and updating::
+Installation and updating:
+
+.. code-block:: bash
 
    $ easy_install -f http://alkyoneus.hbz-nrw.de/dist -n -U hbz.lobid
