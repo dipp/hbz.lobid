@@ -1,6 +1,6 @@
 RESOURCE = "resource"
 ITEM = "item"
 ORGANISATION = "organisation"
-PERSON ="person"
+PERSON = "person"
 SUBJECT = "subject"
 SEARCH = "search"
