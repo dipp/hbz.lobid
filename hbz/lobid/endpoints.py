@@ -1,6 +1,7 @@
-RESOURCE = "resource"
+# possible endpoints of the lobid API
+RESOURCES = "resources"
+ORGANISATIONS = "organisations"
 ITEM = "item"
-ORGANISATION = "organisation"
 PERSON = "person"
 SUBJECT = "subject"
 SEARCH = "search"
