@@ -7,12 +7,13 @@ setup(name='hbz.lobid',
       version=version,
       description="A client to the lobid API",
       long_description=open("README.rst").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+      open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
-        "Programming Language :: Python",
-        ],
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2.7",
+      ],
       keywords='',
       author='Peter Reimer',
       author_email='reimer@hbz-nrw.de',
@@ -24,7 +25,7 @@ setup(name='hbz.lobid',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'httplib2'
+          'requests'
           # -*- Extra requirements: -*-
       ],
       entry_points="""
