@@ -2,7 +2,7 @@ hbz.lobid
 =========
 
 Python module for getting information from the `lobid API <http://lobid.org/api>`_,
-Version 1.x
+Version 2.x
 
 
 

@@ -1,93 +1,51 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import httplib2
+import requests
 import urlparse
 import logging
-try:
-    import json
-except ImportError:
-    import simplejson as json
 
-import endpoints
-import node_types
+from endpoints import ORGANISATIONS
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 console = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)s - %(message)s')
 console.setFormatter(formatter)
 logger.addHandler(console)
 
 ADDRESS = "lobid.org"
-PARAMETERS = ('id', 'name', 'q', 'format')
-RDF_SERIALIZATION = "application/json"
+PARAMETERS = ('name', 'q', 'format')
 
 
 class Client:
 
-    def __init__(self):
-        pass
+    def __init__(self, endpoint):
+        self.endpoint = endpoint
 
-    def _make_rest_uri(self, endpoint, **kwargs):
+    def get(self, id=None, **kwargs):
+        # http://lobid.org/organisations/DE-6?format=json
+        url = self._make_rest_uri(id)
+        r = requests.get(url, params=kwargs)
+        status = r.status_code
+        logger.debug("%s %s" % (url, status))
+        if status == 200:
+            return r.json()
+        else:
+            return None
 
-        query = []
-        for name, value in kwargs.items():
-            if name in PARAMETERS:
-                query.append("%s=%s" % (name, value))
-        uri = urlparse.urlunparse(('http', ADDRESS, endpoint, '', '&'.join(query), ''))
-        logger.info(uri)
-        return uri
+    def _make_rest_uri(self, id=None):
+        """Return the URL for the api request."""
+        if id:
+            path = '/'.join((self.endpoint, id))
+        else:
+            path = self.endpoint
 
-    def get_info(self, isil):
-
-        h = httplib2.Http()
-        endpoint = endpoints.ORGANISATION
-        uri = self._make_rest_uri(endpoint, id=isil, format='negotiate')
-        method = 'GET'
-        headers = {
-            'Accept': RDF_SERIALIZATION,
-        }
-        response, content = h.request(uri, method, headers=headers)
-        logger.info(response['status'])
-        return content
-
-    def get_graphs(self, content):
-        results = json.loads(content)
-        graphs = []
-        for result in results:
-            graph = result.get('@graph', None)
-            if graph:
-                graphs.append(graph)
-        return graphs
-
-    def parse_organizations(self, graphs):
-        organizations = []
-        for graph in graphs:
-            # graph is a list of dictionaries with a key @id
-            organization = {}
-            for node in graph:
-                node_id = node.get('@id', {})
-                node_type = node.get('@type', {})
-                if node_type == node_types.ORGANIZATION:
-                    orga_node = node
-                else:
-                    organization[node_id] = node
-
-            for key, value in orga_node.iteritems():
-                if value in organization.keys():
-                    orga_node[key] = organization[value]
-            organizations.append(orga_node)
-
-        return organizations
+        rest_uri = urlparse.urlunparse(('https', ADDRESS, path, '', '', ''))
+        return rest_uri
 
 
 if __name__ == '__main__':
-
-    x = Client()
-    # answer = x.get_info('DE-605')
-    answer = x.get_info('DE-A96')
-    graphs = x.get_graphs(answer)
-    organizations = x.parse_organizations(graphs)
-    print "====\n", organizations
+    logger.setLevel(logging.INFO)
+    x = Client(ORGANISATIONS)
+    print x.get(id="DE-605", format="xml")
